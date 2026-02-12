@@ -70,9 +70,9 @@ export default function () {
   sleep(Math.random() * 2);
 }
 
-// export function handleSummary(data) {
-//     return {
-//         "K6report.html": htmlReport(data),
-//     }
-// }
+export function handleSummary(data) {
+    return {
+        "K6report.html": htmlReport(data),
+    }
+}
 
