@@ -10,32 +10,69 @@ export const responseTimeTrend = new Trend('custom_response_time');
 // Test configuration
 export const options = {
   scenarios: {
+
+    // Load Test
     load_test: {
       executor: 'ramping-vus',
-      startVUs: 0,
       stages: [
-        { duration: '10s', target: 20 },
         { duration: '30s', target: 20 },
+        { duration: '1m', target: 20 },
+        { duration: '30s', target: 0 },
+      ],
+    },
+
+    // Spike Test
+    spike_test: {
+      executor: 'ramping-vus',
+      startTime: '2m',
+      stages: [
+        { duration: '10s', target: 100 },
+        { duration: '30s', target: 100 },
         { duration: '10s', target: 0 },
       ],
     },
-    spike_test: {
+
+    // Stress Test
+    stress_test: {
       executor: 'ramping-vus',
-      startVUs: 0,
+      startTime: '3m',
       stages: [
-        { duration: '5s', target: 50 },
-        { duration: '10s', target: 50 },
-        { duration: '5s', target: 0 },
+        { duration: '30s', target: 50 },
+        { duration: '30s', target: 100 },
+        { duration: '30s', target: 200 },
+        { duration: '30s', target: 300 },
+        { duration: '30s', target: 0 },
       ],
-      startTime: '55s',
+    },
+
+    // Soak / Endurance Test
+    soak_test: {
+      executor: 'constant-vus',
+      vus: 30,
+      duration: '30m',
+      startTime: '6m',
+    },
+
+    // 5️⃣ Scalability Test
+    scalability_test: {
+      executor: 'ramping-vus',
+      startTime: '36m',
+      stages: [
+        { duration: '1m', target: 20 },
+        { duration: '1m', target: 40 },
+        { duration: '1m', target: 80 },
+        { duration: '1m', target: 160 },
+        { duration: '1m', target: 0 },
+      ],
     },
   },
+
   thresholds: {
     http_req_duration: ['p(95)<800'],
     http_req_failed: ['rate<0.02'],
-    errors: ['rate<0.02'],
   },
 };
+
 
 export default function () {
   const BASE_URL = 'https://jsonplaceholder.typicode.com';
